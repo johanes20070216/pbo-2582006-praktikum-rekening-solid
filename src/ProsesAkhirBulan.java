@@ -21,6 +21,9 @@ public class ProsesAkhirBulan {
     }
 
     public void autodebet(Rekening[] rekening, int jumlah) {
+        if (jumlah <= 0) {
+            throw new IllegalArgumentException("Jumlah autodebet harus positif");
+        }
         for (Rekening item : rekening) {
             boolean berhasil = item.tarik(jumlah);
             cetakStatus(item, "autodebet", jumlah, berhasil);

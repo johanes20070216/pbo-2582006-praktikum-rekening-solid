@@ -7,6 +7,7 @@ public class RekeningContractTest {
         ujiOverdraft();
         ujiBungaDanBiaya();
         ujiDeposito();
+        ujiValidasiInput();
     }
 
     private static void ujiSetor() {
@@ -68,10 +69,30 @@ public class RekeningContractTest {
                 "Tarik deposito setelah jatuh tempo harus berhasil");
     }
 
+    private static void ujiValidasiInput() {
+        verifikasiMenolak(() -> new Tabungan(9, "I", 100_000, Double.NaN),
+                "Bunga tabungan NaN harus ditolak");
+        verifikasiMenolak(() -> new Deposito(10, "J", 100_000, Double.POSITIVE_INFINITY,
+                        LocalDate.now().plusDays(1)),
+                "Bunga deposito tak hingga harus ditolak");
+        verifikasiMenolak(() -> new ProsesAkhirBulan().autodebet(
+                        new Rekening[]{new Giro(11, "K", 100_000, 50_000)}, 0),
+                "Jumlah autodebet nol harus ditolak");
+    }
+
     private static void verifikasi(boolean kondisi, String kasus) {
         assert kondisi : kasus;
         if (!kondisi) {
             throw new AssertionError(kasus);
         }
+    }
+
+    private static void verifikasiMenolak(Runnable tindakan, String kasus) {
+        try {
+            tindakan.run();
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        throw new AssertionError(kasus);
     }
 }

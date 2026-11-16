@@ -8,7 +8,7 @@ public class Deposito extends Rekening implements BerBunga {
     public Deposito(int nomor, String pemilik, long saldoAwal, double bungaPersen,
                     LocalDate jatuhTempo) {
         super(nomor, pemilik, saldoAwal);
-        if (bungaPersen < 0 || jatuhTempo == null) {
+        if (!Double.isFinite(bungaPersen) || bungaPersen < 0 || jatuhTempo == null) {
             throw new IllegalArgumentException("Data deposito tidak valid");
         }
         this.bungaPersen = bungaPersen;

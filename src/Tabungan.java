@@ -5,8 +5,8 @@ public class Tabungan extends Rekening implements BerBunga {
 
     public Tabungan(int nomor, String pemilik, long saldoAwal, double bungaPersen) {
         super(nomor, pemilik, saldoAwal);
-        if (bungaPersen < 0) {
-            throw new IllegalArgumentException("Bunga tidak boleh negatif");
+        if (!Double.isFinite(bungaPersen) || bungaPersen < 0) {
+            throw new IllegalArgumentException("Bunga harus terbatas dan tidak boleh negatif");
         }
         this.bungaPersen = bungaPersen;
     }
