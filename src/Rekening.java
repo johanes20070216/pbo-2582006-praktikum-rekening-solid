@@ -25,7 +25,7 @@ public abstract class Rekening {
     }
 
     public boolean setor(long jumlah) {
-        if (jumlah <= 0) {
+        if (jumlah <= 0 || saldo > Long.MAX_VALUE - jumlah) {
             return false;
         }
         saldo += jumlah;
@@ -37,10 +37,25 @@ public abstract class Rekening {
     }
 
     protected boolean tarikDenganBatas(long jumlah, long batasTambahan) {
-        if (jumlah <= 0 || batasTambahan < 0 || jumlah > saldo + batasTambahan) {
+        if (jumlah <= 0 || batasTambahan < 0) {
             return false;
         }
-        saldo -= jumlah;
+
+        long saldoMaksimal;
+        try {
+            saldoMaksimal = Math.addExact(saldo, batasTambahan);
+        } catch (ArithmeticException e) {
+            saldoMaksimal = Long.MAX_VALUE;
+        }
+        if (jumlah > saldoMaksimal) {
+            return false;
+        }
+
+        try {
+            saldo = Math.subtractExact(saldo, jumlah);
+        } catch (ArithmeticException e) {
+            return false;
+        }
         return true;
     }
 
@@ -52,7 +67,7 @@ public abstract class Rekening {
         if (jumlah < 0) {
             throw new IllegalArgumentException("Jumlah tidak boleh negatif");
         }
-        saldo += jumlah;
+        saldo = Math.addExact(saldo, jumlah);
     }
 
     public abstract String keterangan();

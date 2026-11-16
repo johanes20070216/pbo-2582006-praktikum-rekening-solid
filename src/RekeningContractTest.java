@@ -16,6 +16,11 @@ public class RekeningContractTest {
 
         boolean setorNol = rekening.setor(0);
         verifikasi(!setorNol && rekening.getSaldo() == 125_000, "Setor nol harus gagal tanpa mengubah saldo");
+
+        Rekening saldoMaksimal = new Tabungan(8, "H", Long.MAX_VALUE, 0);
+        boolean setorMelebihiBatas = saldoMaksimal.setor(1);
+        verifikasi(!setorMelebihiBatas && saldoMaksimal.getSaldo() == Long.MAX_VALUE,
+                "Setor yang menyebabkan saldo overflow harus gagal");
     }
 
     private static void ujiTarik() {
